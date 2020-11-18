@@ -5,3 +5,7 @@
 
 # Extensions
 *.tgz
+
+.cr*
+
+*.lock
