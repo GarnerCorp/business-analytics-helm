@@ -265,7 +265,7 @@ thriftserver:
   ## Set a custom configuration by using an existing configMap with the configuration file.
   ##
   # configurationConfigMap:
-  
+
   ## Spark container ports
   ##
   webPort: 4040
