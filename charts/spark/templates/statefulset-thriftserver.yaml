@@ -1,0 +1,165 @@
+apiVersion: apps/v1
+kind: StatefulSet
+metadata:
+  name: {{ include "common.names.fullname" . }}-thriftserver
+  labels: {{- include "common.labels.standard" . | nindent 4 }}
+    app.kubernetes.io/component: thriftserver
+spec:
+  serviceName: {{ template "common.names.fullname" . }}-headless
+  replicas: {{ .Values.thriftserver.replicaCount }}
+  selector:
+    matchLabels: {{- include "common.labels.matchLabels" . | nindent 6 }}
+      app.kubernetes.io/component: thriftserver
+  template:
+    metadata:
+      labels: {{- include "common.labels.standard" . | nindent 8 }}
+        app.kubernetes.io/component: thriftserver
+        {{- if .Values.thriftserver.extraPodLabels }}
+          {{- include "common.tplvalues.render" (dict "value" .Values.thriftserver.extraPodLabels "context" $) | nindent 8 }}
+        {{- end }}
+      {{- if .Values.thriftserver.podAnnotations }}
+      annotations: {{- include "common.tplvalues.render" (dict "value" .Values.thriftserver.podAnnotations "context" $) | nindent 8 }}
+      {{- end }}
+    spec:
+      {{- if .Values.thriftserver.affinity }}
+      affinity: {{- include "common.tplvalues.render" (dict "value" .Values.thriftserver.affinity "context" $) | nindent 8 }}
+      {{- end }}
+      {{- if .Values.thriftserver.nodeSelector }}
+      nodeSelector: {{- include "common.tplvalues.render" (dict "value" .Values.thriftserver.nodeSelector "context" $) | nindent 8 }}
+      {{- end }}
+      {{- if .Values.thriftserver.tolerations }}
+      tolerations: {{- include "common.tplvalues.render" (dict "value" .Values.thriftserver.tolerations "context" $) | nindent 8 }}
+      {{- end }}
+      {{- if .Values.thriftserver.securityContext.enabled }}
+      securityContext:
+        fsGroup: {{ .Values.thriftserver.securityContext.fsGroup }}
+        runAsUser: {{ .Values.thriftserver.securityContext.runAsUser }}
+      {{- end }}
+      containers:
+        - name: spark-thriftserver
+          image: {{- if .Values.thriftserver.image }} {{ .Values.thriftserver.image }} {{- else }} {{ template "spark.image" . }} {{- end }}
+          imagePullPolicy: {{ .Values.image.pullPolicy | quote }}
+          ports:
+            - name: http
+              containerPort: {{ .Values.thriftserver.webPort }}
+              protocol: TCP
+            - name: cluster
+              containerPort: {{ .Values.thriftserver.clusterPort }}
+          volumeMounts:
+            {{- if .Values.thriftserver.configurationConfigMap }}
+            - name: config
+              mountPath: '/opt/bitnami/spark/conf/'
+            {{- end }}
+            {{- if .Values.security.certificatesSecretName }}
+            - name: certs
+              mountPath: '/opt/bitnami/spark/conf/certs'
+              readOnly: true
+            {{- end }}
+            {{- if .Values.thriftserver.extraVolumeMounts }}
+            {{- tpl (toYaml .Values.thriftserver.extraVolumeMounts) $ | nindent 12 }}
+            {{- end }}
+          env:
+            - name: SPARK_MODE
+              value: "thriftserver"
+            {{- if .Values.thriftserver.debug }}
+            - name: BASH_DEBUG
+              value: {{ ternary "1" "0" .Values.image.debug | quote }}
+            {{- end }}
+            - name: SPARK_DAEMON_MEMORY
+              value: {{ .Values.thriftserver.daemonMemoryLimit | quote }}
+            {{- if .Values.thriftserver.clusterPort }}
+            - name: SPARK_THRIFTSERVER_PORT
+              value: {{ .Values.thriftserver.clusterPort | quote }}
+            {{- end }}
+            {{- if .Values.thriftserver.webPort }}
+            - name: SPARK_THRIFTSERVER_WEBUI_PORT
+              value: {{ .Values.thriftserver.webPort | quote }}
+            {{- end }}
+            - name: SPARK_MASTER_URL
+              value: spark://{{ include "spark.master.service.name" . }}:{{ .Values.service.clusterPort }}
+            {{- if .Values.thriftserver.configOptions }}
+            - name: SPARK_THRIFTSERVER_OPTS
+              value: {{ .Values.thriftserver.configOptions | quote }}
+            {{- end }}
+            {{- if .Values.security.rpc.authenticationEnabled }}
+            - name: SPARK_RPC_AUTHENTICATION_ENABLED
+              value: {{ .Values.security.rpc.authenticationEnabled | quote }}
+            - name: SPARK_RPC_AUTHENTICATION_SECRET
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "spark.passwordsSecretName" . }}
+                  key: rpc-authentication-secret
+            {{- end }}
+            {{- if .Values.security.rpc.encryptionEnabled }}
+            - name: SPARK_RPC_ENCRYPTION_ENABLED
+              value: {{ .Values.security.rpc.encryptionEnabled | quote }}
+            {{- end }}
+            {{- if .Values.security.storageEncryptionEnabled }}
+            - name: SPARK_LOCAL_STORAGE_ENCRYPTION_ENABLED
+              value: {{ .Values.security.storageEncryptionEnabled | quote }}
+            {{- end }}
+            {{- if .Values.security.ssl.enabled }}
+            - name: SPARK_SSL_ENABLED
+              value: {{ .Values.security.ssl.enabled | quote }}
+            - name: SPARK_SSL_KEY_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "spark.passwordsSecretName" . }}
+                  key: ssl-key-password
+            - name: SPARK_SSL_KEYSTORE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "spark.passwordsSecretName" . }}
+                  key: ssl-keystore-password
+            - name: SPARK_SSL_TRUSTSTORE_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: {{ template "spark.passwordsSecretName" . }}
+                  key: ssl-truststore-password
+            - name: SPARK_SSL_NEED_CLIENT_AUTH
+              value: {{ .Values.security.ssl.needClientAuth | quote }}
+            - name: SPARK_SSL_PROTOCOL
+              value: {{ .Values.security.ssl.protocol | quote }}
+            {{- end }}
+            {{- if .Values.thriftserver.extraEnvVars }}
+            {{- toYaml .Values.thriftserver.extraEnvVars | nindent 12 }}
+            {{- end }}
+          {{- if .Values.thriftserver.livenessProbe.enabled }}
+          livenessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.thriftserver.webPort }}
+            initialDelaySeconds: {{ .Values.thriftserver.livenessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.thriftserver.livenessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.thriftserver.livenessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.thriftserver.livenessProbe.successThreshold }}
+            failureThreshold: {{ .Values.thriftserver.livenessProbe.failureThreshold }}
+          {{- end }}
+          {{- if .Values.thriftserver.readinessProbe.enabled }}
+          readinessProbe:
+            httpGet:
+              path: /
+              port: {{ .Values.thriftserver.webPort }}
+            initialDelaySeconds: {{ .Values.thriftserver.readinessProbe.initialDelaySeconds }}
+            periodSeconds: {{ .Values.thriftserver.readinessProbe.periodSeconds }}
+            timeoutSeconds: {{ .Values.thriftserver.readinessProbe.timeoutSeconds }}
+            successThreshold: {{ .Values.thriftserver.readinessProbe.successThreshold }}
+            failureThreshold: {{ .Values.thriftserver.readinessProbe.failureThreshold }}
+          {{- end }}
+          {{- if .Values.thriftserver.resources }}
+          resources: {{- toYaml .Values.thriftserver.resources | nindent 12 }}
+          {{- end }}
+      volumes:
+        {{- if .Values.thriftserver.configurationConfigMap }}
+        - name: config
+          configMap:
+            name: {{ .Values.thriftserver.configurationConfigMap }}
+        {{- end }}
+        {{- if .Values.security.certificatesSecretName }}
+        - name: certs
+          secret:
+            secretName: {{ .Values.security.certificatesSecretName }}
+        {{- end }}
+        {{- if .Values.thriftserver.extraVolumes }}
+        {{- tpl (toYaml .Values.thriftserver.extraVolumes) $ | nindent 8 }}
+        {{- end }}

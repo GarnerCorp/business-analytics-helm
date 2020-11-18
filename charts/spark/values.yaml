@@ -259,6 +259,134 @@ worker:
     ## Max number of workers when using autoscaling
     replicasMax: 5
 
+## Spark thriftserver specific configuration
+##
+thriftserver:
+  ## Set a custom configuration by using an existing configMap with the configuration file.
+  ##
+  # configurationConfigMap:
+  
+  ## Spark container ports
+  ##
+  webPort: 4040
+  clusterPort: 10001
+
+  ## Set the daemonMemoryLimit as the daemon max memory
+  ##
+  # daemonMemoryLimit:
+
+  ## Set the worker memory limit
+  ##
+  # memoryLimit:
+
+  ## Set the maximun number of cores
+  ##
+  # coreLimit:
+
+  ## Working directory for the application
+  ##
+  # dir:
+
+  ## Options for the JVM as "-Dx=y"
+  ##
+  # javaOptions:
+
+  ## Configuraion options in the form "-Dx=y"
+  ##
+  # configOptions:
+
+  ## An array to add extra env vars
+  ## For example:
+  ## extraEnvVars:
+  ##  - name: SPARK_DAEMON_JAVA_OPTS
+  ##    value: -Dx=y
+  # extraEnvVars:
+
+  ## Number of spark thriftservers (will be the min number when autoscaling is enabled)
+  ##
+  replicaCount: 1
+
+  ## Kubernetes Security Context
+  ## https://kubernetes.io/docs/tasks/configure-pod-container/security-context/
+  ##
+  securityContext:
+    enabled: true
+    fsGroup: 1001
+    runAsUser: 1001
+
+  ## Annotations to add to the statefulset
+  ##
+  ##
+  podAnnotations: {}
+
+  ## Labes to add to the statefulset
+  ##
+  ##
+  extraPodLabels: {}
+
+  ## Node labels for pod assignment
+  ## Ref: https://kubernetes.io/docs/user-guide/node-selection/
+  ##
+  nodeSelector: {}
+
+  ## Tolerations for pod assignment
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  ##
+  tolerations: []
+
+  ## Affinity for pod assignment
+  ## Ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  ##
+  affinity: {}
+
+  ## Configure resource requests and limits
+  ## ref: http://kubernetes.io/docs/user-guide/compute-resources/
+  ##
+  resources:
+    # We usually recommend not to specify default resources and to leave this as a conscious
+    # choice for the user. This also increases chances charts run on environments with little
+    # resources, such as Minikube. If you do want to specify resources, uncomment the following
+    # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+    limits: {}
+    #   cpu: 250m
+    #   memory: 256Mi
+    requests: {}
+    #   cpu: 250m
+    #   memory: 256Mi
+
+  ## Configure liveness and readiness probes
+  ## ref: https://kubernetes.io/docs/tasks/configure-pod-container/configure-liveness-readiness-probes/#configure-probes)
+  ##
+  livenessProbe:
+    enabled: true
+    initialDelaySeconds: 180
+    periodSeconds: 20
+    timeoutSeconds: 5
+    failureThreshold: 6
+    successThreshold: 1
+  readinessProbe:
+    enabled: true
+    initialDelaySeconds: 30
+    periodSeconds: 10
+    timeoutSeconds: 5
+    failureThreshold: 6
+    successThreshold: 1
+
+  ## Array to add extra volumes
+  ##
+  ## extraVolumes:
+  ## Array to add extra mounts (normally used with extraVolumes)
+  ##
+  ## extraVolumeMounts: {}
+  ## Autoscaling parameters
+  ##
+  autoscaling:
+    ## Enable replica autoscaling depending on CPU
+    enabled: false
+    CpuTargetPercentage: 50
+    ## Max number of workers when using autoscaling
+    replicasMax: 5
+
 ## Security configuration
 ##
 security:
