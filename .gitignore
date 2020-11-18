@@ -1,0 +1,7 @@
+# IDEs and Editors
+.metals/
+.vscode/
+.idea/
+
+# Extensions
+*.tgz
