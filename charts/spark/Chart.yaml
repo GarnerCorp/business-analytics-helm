@@ -21,4 +21,5 @@ name: spark
 sources:
   - https://github.com/bitnami/bitnami-docker-spark
   - https://spark.apache.org/
-version: 4.1.0
+  - https://github.com/GarnerCorp/business-analytics/
+version: 0.0.1
