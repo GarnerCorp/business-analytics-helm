@@ -1,0 +1,36 @@
+apiVersion: v1
+entries:
+  spark:
+  - annotations:
+      category: Infrastructure
+    apiVersion: v2
+    appVersion: 3.0.1
+    created: "2020-11-20T13:15:36.352533-05:00"
+    dependencies:
+    - name: common
+      repository: https://charts.bitnami.com/bitnami
+      tags:
+      - bitnami-common
+      version: 1.0.0
+    description: Spark is a fast and general-purpose cluster computing system.
+    digest: 104c32c0502a6c0aea4fa750f2a0f809558d1d8bf52007311f44df4ce2257314
+    home: https://github.com/bitnami/charts/tree/master/bitnami/spark
+    icon: https://bitnami.com/assets/stacks/spark/img/spark-stack-220x234-1ea65541e9e427ca5b93300e61d4778576c7f679ae02addb86a2641b0ca70476.png
+    keywords:
+    - apache
+    - spark
+    - hive
+    - thriftserver
+    maintainers:
+    - email: containers@bitnami.com
+      name: Bitnami
+    name: spark
+    sources:
+    - https://github.com/bitnami/bitnami-docker-spark
+    - https://github.com/bitnami/charts/tree/master/bitnami/spark/
+    - https://spark.apache.org/
+    - https://github.com/GarnerCorp/business-analytics/
+    urls:
+    - https://github.com/GarnerCorp/business-analytics-helm/releases/download/spark-0.0.1/spark-0.0.1.tgz
+    version: 0.0.1
+generated: "2020-11-20T13:10:30.691148-05:00"
