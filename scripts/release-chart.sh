@@ -21,15 +21,15 @@ cr package charts/spark
 upload() {
 cr upload \
     --owner GarnerCorp \
-    --git-repo business-analytics \
+    --git-repo business-analytics-helm \
     --token $GITHUB_PAT
 }
 
 update_index() {
 cr index \
     --owner GarnerCorp \
-    --git-repo business-analytics \
-    --charts-repo https://garnercorp.github.io/business-analytics/ \
+    --git-repo business-analytics-helm \
+    --charts-repo https://garnercorp.github.io/business-analytics-helm/ \
     --token $GITHUB_PAT \
     --index-path . 
 }
