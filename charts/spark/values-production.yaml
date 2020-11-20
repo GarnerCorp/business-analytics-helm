@@ -262,6 +262,8 @@ worker:
 ## Spark thriftserver specific configuration
 ##
 thriftserver:
+  image: gcr.io/helical-crowbar-220917/garner-hive-thriftserver
+
   ## Set a custom configuration by using an existing configMap with the configuration file.
   ##
   # configurationConfigMap:
