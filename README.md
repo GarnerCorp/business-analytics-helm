@@ -1,5 +1,5 @@
 # Business Analytics Helm
-This respository contains a helm chart for running Garner Spark and Thrift Server.
+This respository contains a helm chart for running Garner Spark and Thrift Server, using a modified version of [Bitnami's Spark Helm Chart](https://github.com/bitnami/charts/tree/master/bitnami/spark).
 
 ## Using the Chart
 The chart can be added as a dependency to other charts by adding this to your Chart.yaml:
