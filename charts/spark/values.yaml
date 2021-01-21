@@ -70,8 +70,8 @@ master:
   ##
   securityContext:
     enabled: true
-    fsGroup: 1001
-    runAsUser: 1001
+    fsGroup: 185
+    runAsUser: 185
 
   ## Annotations to add to the statefulset
   ##
@@ -183,8 +183,8 @@ worker:
   ##
   securityContext:
     enabled: true
-    fsGroup: 1001
-    runAsUser: 1001
+    fsGroup: 185
+    runAsUser: 185
 
   ## Annotations to add to the statefulset
   ##
@@ -312,8 +312,8 @@ thriftserver:
   ##
   securityContext:
     enabled: true
-    fsGroup: 1001
-    runAsUser: 1001
+    fsGroup: 185
+    runAsUser: 185
 
   ## Annotations to add to the statefulset
   ##

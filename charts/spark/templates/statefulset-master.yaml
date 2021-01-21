@@ -56,6 +56,8 @@ spec:
               mountPath: '/opt/bitnami/spark/conf/certs'
               readOnly: true
             {{- end }}
+            - name: logs
+              mountPath: '/opt/spark/logs'
             {{- if .Values.master.extraVolumeMounts }}
             {{- tpl (toYaml .Values.master.extraVolumeMounts) $ | nindent 12 }}
             {{- end }}
@@ -149,6 +151,8 @@ spec:
           resources: {{- toYaml .Values.master.resources | nindent 12 }}
           {{- end }}
       volumes:
+        - name: logs
+          emptyDir: {}
         {{- if .Values.master.configurationConfigMap }}
         - name: config
           configMap:
