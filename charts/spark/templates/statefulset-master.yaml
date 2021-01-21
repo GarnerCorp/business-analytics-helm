@@ -149,8 +149,6 @@ spec:
           resources: {{- toYaml .Values.master.resources | nindent 12 }}
           {{- end }}
       volumes:
-        - name: logs
-          emptyDir: {}
         {{- if .Values.master.configurationConfigMap }}
         - name: config
           configMap:
