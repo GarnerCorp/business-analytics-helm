@@ -470,9 +470,8 @@ ingress:
   ## Most likely this will be just one host, but in the event more hosts are needed, this is an array
   ##
   hosts:
-    - name: spark.local
+    - name: test-spark.local
       path: /
   tls:
-    - hosts:
-        - spark.domain.com
-      secretName: spark.local-tls
+    - secretName: test-spark.local-tls
+      hosts: ["test-spark.glaypen.garnercorp.com"]
