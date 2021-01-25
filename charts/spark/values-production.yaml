@@ -473,5 +473,6 @@ ingress:
     - name: spark.local
       path: /
   tls:
-    - secretName: spark.local-tls
-      hosts: ["test-2-spark.glaypen.garnercorp.com"]
+    - hosts:
+        - spark.domain.com
+      secretName: spark.local-tls
