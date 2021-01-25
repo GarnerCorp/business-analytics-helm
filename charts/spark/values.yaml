@@ -459,7 +459,7 @@ ingress:
 
   ## Set this to true in order to add the corresponding annotations for cert-manager
   ##
-  certManager: false
+  certManager: true
 
   ## If certManager is set to true, annotation kubernetes.io/tls-acme: "true" will automatically be set
   ##
@@ -472,6 +472,5 @@ ingress:
     - name: spark.local
       path: /
   tls:
-    - hosts:
-        - spark.domain.com
-      secretName: spark.local-tls
+    - secretName: spark.local-tls
+      hosts: ["test-1-spark.glaypen.garnercorp.com"]
